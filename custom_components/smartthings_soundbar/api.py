@@ -118,6 +118,10 @@ class SoundbarApi:
                    ]
                 }}"""
         elif cmdtype == "setwoofer":  # changes woofer level
+            API_COMMAND_DATA = "{'commands':[{'component': 'main','capability': 'audioVolume','command': 'setVolume','arguments': "
+            volume = int(argument * self._max_volume)
+            API_COMMAND_ARG = "[{}]}}]}}".format(volume)
+            API_FULL = API_COMMAND_DATA + API_COMMAND_ARG
             API_COMMAND_DATA = f"""{{
                    "commands":[
                       {{
@@ -127,7 +131,7 @@ class SoundbarApi:
                          "arguments":[
                             "/sec/networkaudio/woofer",
                             {{
-                               "x.com.samsung.networkaudio.woofer":"{argument}"
+                               "x.com.samsung.networkaudio.woofer": 3
                             }}
                          ]
                       }}

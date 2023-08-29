@@ -117,5 +117,21 @@ class SoundbarApi:
                       }}
                    ]
                 }}"""
+        elif cmdtype == "setwoofer":  # changes woofer level
+            API_COMMAND_DATA = f"""{{
+                   "commands":[
+                      {{
+                         "component":"main",
+                         "capability":"execute",
+                         "command":"execute",
+                         "arguments":[
+                            "/sec/networkaudio/woofer",
+                            {{
+                               "x.com.samsung.networkaudio.woofer":"{argument}"
+                            }}
+                         ]
+                      }}
+                   ]
+                }}"""
             cmdurl = requests.post(API_COMMAND, data=API_COMMAND_DATA, headers=REQUEST_HEADERS)
         self.async_schedule_update_ha_state()

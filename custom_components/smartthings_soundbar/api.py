@@ -61,6 +61,19 @@ class SoundbarApi:
         else:
             self._media_title = None
 
+        for ocf in self._ocf:
+            SoundbarApi.send_command_ocf(ocf)
+            resp = requests.get(API_DEVICE_STATUS, headers=REQUEST_HEADERS)
+            data = resp.json()
+
+            json_string = data['main']['data']['value']
+            parsed_data = json.loads(json_string)
+
+            ocfValue = parsed_data['payload'][f"x.com.samsung.networkaudio.{ocf}"]
+
+            self._ocfData['ocf'] = ocfValue
+
+
     @staticmethod
     def send_command(self, argument, cmdtype):
         API_KEY = self._api_key
@@ -117,25 +130,35 @@ class SoundbarApi:
                       }}
                    ]
                 }}"""
-        elif cmdtype == "setwoofer":  # changes woofer level
-            API_COMMAND_DATA = "{'commands':[{'component': 'main','capability': 'audioVolume','command': 'setVolume','arguments': "
-            volume = int(argument * self._max_volume)
-            API_COMMAND_ARG = "[{}]}}]}}".format(volume)
-            API_FULL = API_COMMAND_DATA + API_COMMAND_ARG
-            API_COMMAND_DATA = f"""{{
-                   "commands":[
-                      {{
-                         "component":"main",
-                         "capability":"execute",
-                         "command":"execute",
-                         "arguments":[
-                            "/sec/networkaudio/woofer",
-                            {{
-                               "x.com.samsung.networkaudio.woofer": 3
-                            }}
-                         ]
-                      }}
-                   ]
-                }}"""
-            cmdurl = requests.post(API_COMMAND, data=API_COMMAND_DATA, headers=REQUEST_HEADERS)
+        self.async_schedule_update_ha_state()
+
+    @staticmethod
+    def send_command_ocf(self, ocftype, ocfvalue = None):
+        API_KEY = self._api_key
+        REQUEST_HEADERS = {"Authorization": "Bearer " + API_KEY}
+        DEVICE_ID = self._device_id
+        API_DEVICES = API_BASEURL + "/devices/"
+        API_DEVICE = API_DEVICES + DEVICE_ID
+        API_COMMAND = API_DEVICE + "/commands"
+
+        if ocfvalue != None and ocfvalue.isdigit():
+            ocfvalue = int(ocfvalue)
+            
+        API_VALUE = f""",{{"x.com.samsung.networkaudio.{ocftype}": {ocfvalue}}}""" if ocfvalue != None else ""
+
+        API_COMMAND_DATA = f"""{{
+                "commands":[
+                    {{
+                        "component":"main",
+                        "capability":"execute",
+                        "command":"execute",
+                        "arguments":[
+                            "/sec/networkaudio/{ocftype}"
+                            {API_VALUE}
+                        ]
+                    }}
+                ]
+            }}"""
+        cmdurl = requests.post(API_COMMAND, data=API_COMMAND_DATA, headers=REQUEST_HEADERS)
+
         self.async_schedule_update_ha_state()

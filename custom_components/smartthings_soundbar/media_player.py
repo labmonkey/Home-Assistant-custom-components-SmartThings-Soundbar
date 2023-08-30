@@ -7,6 +7,7 @@ from homeassistant.components.media_player import (
     MediaPlayerEntity,
     PLATFORM_SCHEMA,
     DEVICE_CLASS_SPEAKER,
+    ATTR_TO_PROPERTY
 )
 from homeassistant.components.media_player.const import (
     SUPPORT_PAUSE,
@@ -52,6 +53,11 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
+ATTR_TO_PROPERTY = ATTR_TO_PROPERTY.extend(
+    [
+        "woofer_level"
+    ]
+)
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     name = config.get(CONF_NAME)

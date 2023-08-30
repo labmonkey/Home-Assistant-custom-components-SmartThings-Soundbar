@@ -71,7 +71,7 @@ class SoundbarApi:
 
             ocfValue = parsed_data['payload'][f"x.com.samsung.networkaudio.{ocf}"]
 
-            self._ocfData['ocf'] = ocfValue
+            self._ocfData[ocf] = ocfValue
 
 
     @staticmethod

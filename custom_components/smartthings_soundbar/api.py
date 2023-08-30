@@ -62,7 +62,7 @@ class SoundbarApi:
             self._media_title = None
 
         for ocf in self._ocf:
-            SoundbarApi.send_command_ocf(ocf)
+            SoundbarApi.send_command_ocf(self, ocf)
             resp = requests.get(API_DEVICE_STATUS, headers=REQUEST_HEADERS)
             data = resp.json()
 

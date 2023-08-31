@@ -78,7 +78,7 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
         self._source_list = []
         self._media_title = ""
         self._ocf = ocf
-        self.extra_state_attributes = {"woofer" : 0}
+        self._attr_extra_state_attributes = {"woofer" : 0}
 
     def update(self):
         SoundbarApi.device_update(self)
@@ -155,7 +155,7 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
 
     @property
     def woofer_level(self):
-        return self.extra_state_attributes['woofer']
+        return self._attr_extra_state_attributes['woofer']
     
     @property
     def source(self):
@@ -163,7 +163,7 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
 
     @property
     def soundmode(self):
-        return self.extra_state_attributes['soundmode']
+        return self._attr_extra_state_attributes['soundmode']
     
     @property
     def source_list(self):

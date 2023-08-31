@@ -78,7 +78,7 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
         self._source_list = []
         self._media_title = ""
         self._ocf = ocf
-        self._attr_extra_state_attributes = {"woofer" : 0}
+        self._attr_extra_state_attributes = {"ocf" : {"woofer" : 0}}
 
     def update(self):
         SoundbarApi.device_update(self)
@@ -110,10 +110,17 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
         SoundbarApi.send_command(self, source, cmdtype)
 
     def select_sound_mode(self, sound_mode):
-        SoundbarApi.send_command(self, sound_mode, "soundmode")
+        SoundbarApi.send_command_ocf(self, "soundmode", sound_mode)
 
-    def set_woofer_level(self, value):
-        SoundbarApi.send_command_ocf(self, "woofer", value)
+    def media_play(self):
+        arg = ""
+        cmdtype = "play"
+        SoundbarApi.send_command(self, arg, cmdtype)
+
+    def media_pause(self):
+        arg = ""
+        cmdtype = "pause"
+        SoundbarApi.send_command(self, arg, cmdtype)
 
     @property
     def device_class(self):
@@ -131,16 +138,6 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
     def media_title(self):
         return self._media_title
 
-    def media_play(self):
-        arg = ""
-        cmdtype = "play"
-        SoundbarApi.send_command(self, arg, cmdtype)
-
-    def media_pause(self):
-        arg = ""
-        cmdtype = "pause"
-        SoundbarApi.send_command(self, arg, cmdtype)
-
     @property
     def state(self):
         return self._state
@@ -154,16 +151,12 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
         return self._volume
 
     @property
-    def woofer_level(self):
-        return self._attr_extra_state_attributes['woofer']
-    
-    @property
     def source(self):
         return self._source
 
     @property
     def soundmode(self):
-        return self._attr_extra_state_attributes['soundmode']
+        return self._soundmode
     
     @property
     def source_list(self):

@@ -53,12 +53,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
-ATTR_TO_PROPERTY = ATTR_TO_PROPERTY.extend(
-    [
-        "woofer_level"
-    ]
-)
-
 def setup_platform(hass, config, add_entities, discovery_info=None):
     name = config.get(CONF_NAME)
     api_key = config.get(CONF_API_KEY)
@@ -84,7 +78,7 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
         self._source_list = []
         self._media_title = ""
         self._ocf = ocf
-        self._ocfData = {"woofer" : 0}
+        self.extra_state_attributes = {"woofer" : 0}
 
     def update(self):
         SoundbarApi.device_update(self)
@@ -161,7 +155,7 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
 
     @property
     def woofer_level(self):
-        return self._ocfData['woofer']
+        return self.extra_state_attributes['woofer']
     
     @property
     def source(self):
@@ -169,7 +163,7 @@ class SmartThingsSoundbarMediaPlayer(MediaPlayerEntity):
 
     @property
     def soundmode(self):
-        return self._ocfData['soundmode']
+        return self.extra_state_attributes['soundmode']
     
     @property
     def source_list(self):

@@ -71,7 +71,7 @@ class SoundbarApi:
 
             ocfValue = parsed_data['payload'][f"x.com.samsung.networkaudio.{ocf}"]
 
-            self._ocfData[ocf] = ocfValue
+            self._extra_state_attributes[ocf] = ocfValue
 
 
     @staticmethod
@@ -135,15 +135,15 @@ class SoundbarApi:
     @staticmethod
     def send_command_ocf(self, ocftype, ocfvalue = None):
         API_KEY = self._api_key
-        REQUEST_HEADERS = {"Authorization": "Bearer " + API_KEY}
         DEVICE_ID = self._device_id
-        API_DEVICES = API_BASEURL + "/devices/"
-        API_DEVICE = API_DEVICES + DEVICE_ID
-        API_COMMAND = API_DEVICE + "/commands"
+        REQUEST_HEADERS = {"Authorization": f"Bearer {API_KEY}"}
+        API_COMMAND = f"{API_BASEURL}/devices/{DEVICE_ID}/commands"
 
         if ocfvalue != None and ocfvalue.isdigit():
             ocfvalue = int(ocfvalue)
             
+        # Sending an empty value will only trigger a "refresh" request for given property and then it has to be fetches from /status API.
+        # Unfortuntely only one property at time can be done like this so each time you have to request and read the property before you request another one
         API_VALUE = f""",{{"x.com.samsung.networkaudio.{ocftype}": {ocfvalue}}}""" if ocfvalue != None else ""
 
         API_COMMAND_DATA = f"""{{
